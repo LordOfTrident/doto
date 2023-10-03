@@ -1,0 +1,74 @@
+[
+	{
+		"type": "task",
+		"title": "Tree structure todo list with groups and tasks",
+		"desc": null,
+		"done": true
+	},
+	{
+		"type": "task",
+		"title": "Editing titles, inserting new tasks/groups, removing them...",
+		"desc": null,
+		"done": true
+	},
+	{
+		"type": "task",
+		"title": "Generating markdown of the TODO",
+		"desc": null,
+		"done": true
+	},
+	{
+		"type": "task",
+		"title": "Case sensitive and insensitive searching in the tree",
+		"desc": null,
+		"done": true
+	},
+	{
+		"type": "task",
+		"title": "Jumping around the tree based on the ruler for faster navigation",
+		"desc": null,
+		"done": true
+	},
+	{
+		"type": "task",
+		"title": "Editing task descriptions",
+		"desc": null,
+		"done": false
+	},
+	{
+		"type": "task",
+		"title": "Markdown support in the editor for task descriptions",
+		"desc": null,
+		"done": false
+	},
+	{
+		"type": "group",
+		"title": "Deadlines",
+		"children": [
+			{
+				"type": "task",
+				"title": "Deadline dates on tasks/groups",
+				"desc": null,
+				"done": false
+			},
+			{
+				"type": "task",
+				"title": "Showing which tasks are to be done today, which are past the deadline or before the deadline",
+				"desc": null,
+				"done": false
+			},
+			{
+				"type": "task",
+				"title": "Showing how many tasks are past deadline and how many before deadline",
+				"desc": null,
+				"done": false
+			},
+			{
+				"type": "task",
+				"title": "An optional daemon to run in the background to notify the user how many tasks have to be done today ",
+				"desc": null,
+				"done": false
+			}
+		]
+	}
+]

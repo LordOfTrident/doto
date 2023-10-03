@@ -1,0 +1,13 @@
+# TODO (62% done)
+- [X] Tree structure todo list with groups and tasks
+- [X] Editing titles, inserting new tasks/groups, removing them...
+- [X] Generating markdown of the TODO
+- [X] Case sensitive and insensitive searching in the tree
+- [X] Jumping around the tree based on the ruler for faster navigation
+- [ ] Editing task descriptions
+- [ ] Markdown support in the editor for task descriptions
+- (`0%`) **Deadlines**
+	- [ ] Deadline dates on tasks/groups
+	- [ ] Showing which tasks are to be done today, which are past the deadline or before the deadline
+	- [ ] Showing how many tasks are past deadline and how many before deadline
+	- [ ] An optional daemon to run in the background to notify the user how many tasks have to be done today 

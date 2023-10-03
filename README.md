@@ -24,6 +24,8 @@ A terminal UI todo manager for Linux written in C.
 
 ## Quickstart
 ```sh
+$ git clone --recurse-submodules https://github.com/LordOfTrident/doto
+$ cd doto
 $ make
 $ ./doto -h
 ```

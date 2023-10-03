@@ -149,7 +149,7 @@ static void editor_render_bar_prompt(void) {
 		} int len_left = imbar_sections_end();
 
 		int prompt_x = len_left + 1;
-		int prompt_w = tui_get_w() - prompt_x;
+		int prompt_w = tui_get_w() - prompt_x - 1;
 
 		prompt_render(&state.prompt, prompt_x, 0, prompt_w, colorscheme[C_PROMPT_FG],
 		              colorscheme[C_PROMPT_BG], colorscheme[C_SELECT_FG], colorscheme[C_SELECT_BG]);

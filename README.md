@@ -1,5 +1,4 @@
-<p align="center"><img width="250px" src="res/logo.png"></p>
-<h1 align="center">doto</h1>
+<p align="center"><img width="350px" src="res/logo.png"></p>
 <p align="center">A TUI todo manager</p>
 
 <p align="center">

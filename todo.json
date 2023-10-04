@@ -1,45 +1,87 @@
 [
 	{
+		"type": "group",
+		"title": "Todo tree",
+		"children": [
+			{
+				"type": "task",
+				"title": "Tree structure todo list with groups and tasks",
+				"desc": null,
+				"done": true
+			},
+			{
+				"type": "task",
+				"title": "Inserting, editing, removing",
+				"desc": null,
+				"done": true
+			},
+			{
+				"type": "task",
+				"title": "Selecting multiple task/group lines",
+				"desc": null,
+				"done": false
+			},
+			{
+				"type": "task",
+				"title": "Copy/paste/cut task/group lines",
+				"desc": null,
+				"done": false
+			}
+		]
+	},
+	{
 		"type": "task",
-		"title": "Tree structure todo list with groups and tasks",
+		"title": "Generating markdown",
 		"desc": null,
 		"done": true
 	},
 	{
 		"type": "task",
-		"title": "Editing titles, inserting new tasks/groups, removing them...",
+		"title": "Case sensitive/insensitive tree search",
 		"desc": null,
 		"done": true
 	},
 	{
-		"type": "task",
-		"title": "Generating markdown of the TODO",
-		"desc": null,
-		"done": true
+		"type": "group",
+		"title": "Navigation",
+		"children": [
+			{
+				"type": "task",
+				"title": "Up/down arrows, page up/down, ctrl+up/down arrows",
+				"desc": null,
+				"done": true
+			},
+			{
+				"type": "task",
+				"title": "Left/right arrows, ctrl+left arrow",
+				"desc": null,
+				"done": true
+			},
+			{
+				"type": "task",
+				"title": "Jumping around the tree using the ruler",
+				"desc": null,
+				"done": true
+			}
+		]
 	},
 	{
-		"type": "task",
-		"title": "Case sensitive and insensitive searching in the tree",
-		"desc": null,
-		"done": true
-	},
-	{
-		"type": "task",
-		"title": "Jumping around the tree based on the ruler for faster navigation",
-		"desc": null,
-		"done": true
-	},
-	{
-		"type": "task",
-		"title": "Editing task descriptions",
-		"desc": null,
-		"done": false
-	},
-	{
-		"type": "task",
-		"title": "Markdown support in the editor for task descriptions",
-		"desc": null,
-		"done": false
+		"type": "group",
+		"title": "Task descriptions",
+		"children": [
+			{
+				"type": "task",
+				"title": "Editing, viewing",
+				"desc": null,
+				"done": false
+			},
+			{
+				"type": "task",
+				"title": "Markdown rendering support",
+				"desc": null,
+				"done": false
+			}
+		]
 	},
 	{
 		"type": "group",
@@ -47,27 +89,45 @@
 		"children": [
 			{
 				"type": "task",
-				"title": "Deadline dates on tasks/groups",
+				"title": "Editing, viewing (deadlines will be dates, a specific day, not a specific time)",
 				"desc": null,
 				"done": false
 			},
 			{
 				"type": "task",
-				"title": "Showing which tasks are to be done today, which are past the deadline or before the deadline",
+				"title": "Marking past the deadline, before the deadline or during the deadline",
 				"desc": null,
 				"done": false
 			},
 			{
 				"type": "task",
-				"title": "Showing how many tasks are past deadline and how many before deadline",
+				"title": "Stats showing how many tasks are past deadline, before deadline and during deadline",
 				"desc": null,
 				"done": false
 			},
 			{
-				"type": "task",
-				"title": "An optional daemon to run in the background to notify the user how many tasks have to be done today ",
-				"desc": null,
-				"done": false
+				"type": "group",
+				"title": "Optional notification daemon",
+				"children": [
+					{
+						"type": "task",
+						"title": "Notifying about tasks to be done today and tasks that are past the deadline using an external app",
+						"desc": null,
+						"done": false
+					},
+					{
+						"type": "task",
+						"title": "Configurable notification format",
+						"desc": null,
+						"done": false
+					},
+					{
+						"type": "task",
+						"title": "Configurable notification frequency",
+						"desc": null,
+						"done": false
+					}
+				]
 			}
 		]
 	}

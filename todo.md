@@ -1,13 +1,23 @@
-# TODO (62% done)
-- [X] Tree structure todo list with groups and tasks
-- [X] Editing titles, inserting new tasks/groups, removing them...
-- [X] Generating markdown of the TODO
-- [X] Case sensitive and insensitive searching in the tree
-- [X] Jumping around the tree based on the ruler for faster navigation
-- [ ] Editing task descriptions
-- [ ] Markdown support in the editor for task descriptions
+# TODO (58% done)
+- (`50%`) **Todo tree**
+	- [X] Tree structure todo list with groups and tasks
+	- [X] Inserting, editing, removing
+	- [ ] Selecting multiple task/group lines
+	- [ ] Copy/paste/cut task/group lines
+- [X] Generating markdown
+- [X] Case sensitive/insensitive tree search
+- [X] **Navigation**
+	- [X] Up/down arrows, page up/down, ctrl+up/down arrows
+	- [X] Left/right arrows, ctrl+left arrow
+	- [X] Jumping around the tree using the ruler
+- (`0%`) **Task descriptions**
+	- [ ] Editing, viewing
+	- [ ] Markdown rendering support
 - (`0%`) **Deadlines**
-	- [ ] Deadline dates on tasks/groups
-	- [ ] Showing which tasks are to be done today, which are past the deadline or before the deadline
-	- [ ] Showing how many tasks are past deadline and how many before deadline
-	- [ ] An optional daemon to run in the background to notify the user how many tasks have to be done today 
+	- [ ] Editing, viewing (deadlines will be dates, a specific day, not a specific time)
+	- [ ] Marking past the deadline, before the deadline or during the deadline
+	- [ ] Stats showing how many tasks are past deadline, before deadline and during deadline
+	- (`0%`) **Optional notification daemon**
+		- [ ] Notifying about tasks to be done today and tasks that are past the deadline using an external app
+		- [ ] Configurable notification format
+		- [ ] Configurable notification frequency

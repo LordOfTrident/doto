@@ -197,9 +197,9 @@ static void tview_render_group(tview_t *this, group_t *group, bool active) {
 	tui_set_attr(ATTR_BOLD);
 
 	if (active)
-		tui_set_fg(group->open? colorscheme[C_OPEN_ACTIVE] : colorscheme[C_CLOSE_ACTIVE]);
+		tui_set_fg(group->open? colorscheme[C_CLOSE_ACTIVE] : colorscheme[C_OPEN_ACTIVE]);
 	else
-		tui_set_fg(group->open? colorscheme[C_OPEN_INACTIVE] : colorscheme[C_CLOSE_INACTIVE]);
+		tui_set_fg(group->open? colorscheme[C_CLOSE_INACTIVE] : colorscheme[C_OPEN_INACTIVE]);
 
 	tui_add_rune(group->open? '-' : '+');
 	tui_right(1);

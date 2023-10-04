@@ -608,7 +608,7 @@ static void tview_add_child(tview_t *this, int type) {
 	group_t *group = AS_GROUP(this->lines[this->cur].node);
 	group_add_child(group, new);
 
-	size_t pos = this->cur + tview_find_group_size(this, this->cur) + 1;
+	size_t pos = this->cur + 1;
 	tview_move_up_from(this, pos);
 
 	this->lines[pos].node   = new;

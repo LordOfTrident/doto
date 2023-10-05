@@ -497,8 +497,8 @@ event_t tui_event(void) {
 
 	evt.type = EVENT_KEYPRESS;
 
-	if (in == 27) {
-
+	switch (in) {
+	case 27: {
 #define MAX_SEQ_LEN 16
 
 		char   seq[MAX_SEQ_LEN] = {0}; /* This HAS to be initialized to 0. See the comment above. */
@@ -536,10 +536,13 @@ event_t tui_event(void) {
 			evt.type = EVENT_UNKNOWN;
 			return evt;
 		}
-	} else if (in == 13)
-		evt.key = KEY_ENTER;
-	else
-		evt.key = in;
+	} break;
+
+	case 13: evt.key = KEY_ENTER;     break;
+	case 8:  evt.key = KEY_BACKSPACE; break;
+
+	default: evt.key = in;
+	}
 
 	return evt;
 }

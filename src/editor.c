@@ -324,7 +324,7 @@ static void editor_handle_keypress(int key) {
 	default: UNREACHABLE();
 	}
 
-	if (state.prompt.changed)
+	if (state.prompt.changed && state.thook != NULL)
 		state.thook(state.data, state.prompt.line);
 }
 

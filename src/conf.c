@@ -94,7 +94,7 @@ static const char *conf[] = {
 	"\t\t\"title-bg\":  \"black\",",
 	"\t\t\"y-fg\":      \"black\",",
 	"\t\t\"y-bg\":      \"green\",",
-	"\t\t\"n-fg\":      \"bright white\",",
+	"\t\t\"n-fg\":      \"black\",",
 	"\t\t\"n-bg\":      \"red\",",
 	"\t\t\"cancel-fg\": \"black\",",
 	"\t\t\"cancel-bg\": \"cyan\",",

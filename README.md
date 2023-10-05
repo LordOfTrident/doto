@@ -17,9 +17,15 @@
 A terminal UI todo manager for Linux written in C.
 
 ## Table of contents
+* [Demo](#demo)
 * [Quickstart](#quickstart)
 * [Config](#config)
 * [Bugs](#bugs)
+
+## Demo
+<p align="center">
+	<img src="./res/doto.gif" width="80%">
+</p>
 
 ## Quickstart
 ```sh

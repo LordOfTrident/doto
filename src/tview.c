@@ -528,6 +528,11 @@ static void tview_move_up_from(tview_t *this, size_t pos) {
 }
 
 static void tview_prompt_callback(tview_t *this, const char *text) {
+	this->prompted = false;
+
+	if (text == NULL)
+		return;
+
 	node_t *node = this->lines[this->cur].node;
 	switch (node->type) {
 	case NODE_TASK:
@@ -542,8 +547,6 @@ static void tview_prompt_callback(tview_t *this, const char *text) {
 
 	default: UNREACHABLE();
 	}
-
-	this->prompted = false;
 }
 
 static void tview_prompt_hook(tview_t *this, const char *text) {

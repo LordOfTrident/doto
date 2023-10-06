@@ -220,8 +220,8 @@ static void editor_answer_yn(int answer) {
 	editor_set_mode(MODE_NORM);
 }
 
-static void editor_answer_prompt(void) {
-	state.tcb(state.data, state.prompt.line);
+static void editor_answer_prompt(bool send) {
+	state.tcb(state.data, send? state.prompt.line : NULL);
 	editor_set_mode(MODE_NORM);
 }
 
@@ -285,10 +285,13 @@ static void editor_handle_keypress(int key) {
 		break;
 
 	case MODE_PROMPT:
-		if (key == keybinds[K_DONE])
-			editor_answer_prompt();
-		else
-			prompt_input(&state.prompt, key);
+		MATCH(int, key,
+			TO(keybinds[K_NORM]) editor_answer_prompt(false);
+			TO(keybinds[K_DONE]) editor_answer_prompt(true);
+
+			else
+				prompt_input(&state.prompt, key);
+		);
 		break;
 
 	case MODE_JUMP:

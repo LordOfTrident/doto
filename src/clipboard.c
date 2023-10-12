@@ -9,7 +9,7 @@ static struct {
 void clipboard_init() {
 	state.buf       = NULL;
 	state.xclip_buf = NULL;
-	state.xclip     = flags[F_NO_XCLIP];
+	state.xclip     = !flags[F_NO_XCLIP];
 }
 
 void clipboard_deinit(void) {

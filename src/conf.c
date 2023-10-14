@@ -410,7 +410,7 @@ static void conf_load_colorscheme(json_obj_t *json, const char *path) {
 		assert(colorscheme_keys[i] != NULL);
 
 		json_str_t *color;
-		JSON_EXPECT_STR(color, json_obj_at(group, flags_keys[i]), {
+		JSON_EXPECT_STR(color, json_obj_at(group, colorscheme_keys[i]), {
 			DIE("%s: Color \"%s\" expected to be a color", path, colorscheme_keys[i]);
 		});
 

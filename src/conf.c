@@ -373,80 +373,86 @@ static int str_to_key(const char *str) {
 	return -1;
 }
 
-static json_t *conf_load_group(json_t *j, const char *path, const char *key) {
-	json_t *group = json_obj_at(j, key);
+static json_obj_t *conf_load_group(json_obj_t *json, const char *path, const char *key) {
+	json_obj_t *group;
+	JSON_EXPECT_OBJ(group, json_obj_at(json, key), {
+		DIE("%s: Section \"%s\" is not an object", path, key);
+	});
+
 	if (group == NULL)
 		DIE("%s: Section \"%s\" is missing", path, key);
-	else if (group->type != JSON_OBJ)
-		DIE("%s: Section \"%s\" is not an object", path, key);
 
 	return group;
 }
 
-static void conf_load_flags(json_t *j, const char *path) {
-	json_t *group = conf_load_group(j, path, "flags");
+static void conf_load_flags(json_obj_t *json, const char *path) {
+	json_obj_t *group = conf_load_group(json, path, "flags");
 
 	for (int i = 0; i < FLAGS_COUNT; ++ i) {
 		assert(flags_keys[i] != NULL);
 
-		json_t *val = json_obj_at(group, flags_keys[i]);
-		if (val == NULL)
-			DIE("%s: Flag \"%s\" is missing", path, flags_keys[i]);
-		else if (val->type != JSON_BOOL)
+		json_bool_t *flag;
+		JSON_EXPECT_BOOL(flag, json_obj_at(group, flags_keys[i]), {
 			DIE("%s: Flag \"%s\" expected to be a 'true' or 'false' boolean", path, flags_keys[i]);
+		});
 
-		flags[i] = val->as.bool_;
+		if (flag == NULL)
+			DIE("%s: Flag \"%s\" is missing", path, flags_keys[i]);
+
+		flags[i] = flag->val;
 	}
 }
 
-static void conf_load_colorscheme(json_t *j, const char *path) {
-	json_t *group = conf_load_group(j, path, "colorscheme");
+static void conf_load_colorscheme(json_obj_t *json, const char *path) {
+	json_obj_t *group = conf_load_group(json, path, "colorscheme");
 
 	for (int i = 0; i < COLORSCHEME_COUNT; ++ i) {
 		assert(colorscheme_keys[i] != NULL);
 
-		json_t *val = json_obj_at(group, colorscheme_keys[i]);
-		if (val == NULL)
-			DIE("%s: Color \"%s\" is missing", path, colorscheme_keys[i]);
-		else if (val->type != JSON_STR)
+		json_str_t *color;
+		JSON_EXPECT_STR(color, json_obj_at(group, flags_keys[i]), {
 			DIE("%s: Color \"%s\" expected to be a color", path, colorscheme_keys[i]);
+		});
 
-		int color = str_to_color(val->as.str.buf);
-		if (color == -1)
+		if (color == NULL)
+			DIE("%s: Color \"%s\" is missing", path, colorscheme_keys[i]);
+
+		int val = str_to_color(color->buf);
+		if (val == -1)
 			DIE("%s: Color \"%s\" got an unknown color \"%s\"",
-			    path, colorscheme_keys[i], val->as.str.buf);
+			    path, colorscheme_keys[i], color->buf);
 
-		colorscheme[i] = color;
+		colorscheme[i] = val;
 	}
 }
 
-static void conf_load_keybinds(json_t *j, const char *path) {
-	json_t *group = conf_load_group(j, path, "keybinds");
+static void conf_load_keybinds(json_obj_t *json, const char *path) {
+	json_obj_t *group = conf_load_group(json, path, "keybinds");
 
 	for (int i = 0; i < KEYBINDS_COUNT; ++ i) {
 		assert(colorscheme_keys[i] != NULL);
 
-		json_t *val = json_obj_at(group, keybinds_keys[i]);
-		if (val == NULL)
+		json_t *keybind = json_obj_at(group, keybinds_keys[i]);
+		if (keybind == NULL)
 			DIE("%s: Keybind \"%s\" is missing", path, keybinds_keys[i]);
-		else if (val->type != JSON_STR && val->type != JSON_NULL)
-			DIE("%s: Keybind \"%s\" expected to be a key or null", path, keybinds_keys[i]);
 
-		if (val->type == JSON_NULL) {
+		if (keybind->type == JSON_STR) {
+			const char *key_str = JSON_STR(keybind)->buf;
+			int         key     = str_to_key(key_str);
+			if (key == -1)
+				DIE("%s: Keybind \"%s\" got an unknown key \"%s\"",
+				    path, keybinds_keys[i], key_str);
+
+			keybinds[i] = key;
+			strcpy(keybinds_str[i], key_str);
+		} else if (keybind->type == JSON_NULL) {
 			if (i == K_QUIT)
 				DIE("%s: Cannot set keybind \"%s\" to null", path, keybinds_keys[i]);
 
 			keybinds[i] = -1;
 			strcpy(keybinds_str[i], "none");
-		} else {
-			int key = str_to_key(val->as.str.buf);
-			if (key == -1)
-				DIE("%s: Keybind \"%s\" got an unknown key \"%s\"",
-				    path, keybinds_keys[i], val->as.str.buf);
-
-			keybinds[i] = key;
-			strcpy(keybinds_str[i], val->as.str.buf);
-		}
+		} else
+			DIE("%s: Keybind \"%s\" expected to be a key or null", path, keybinds_keys[i]);
 	}
 }
 
@@ -478,9 +484,13 @@ void conf_load(void) {
 		fclose(file);
 	}
 
-	size_t  row, col;
-	json_t *j = json_from_file(path, &row, &col);
-	if (j == NULL) {
+	size_t row, col;
+	json_obj_t *json;
+	JSON_EXPECT_OBJ(json, json_from_file(path, &row, &col), {
+		DIE("%s: Expected config to be inside an object", path);
+	});
+
+	if (json == NULL) {
 		assert(noch_get_err() != NOCH_ERR_FOPEN);
 
 		if (noch_get_err() == NOCH_ERR_PARSER)
@@ -489,9 +499,9 @@ void conf_load(void) {
 			DIE("%s: %s", path, noch_get_err_msg());
 	}
 
-	conf_load_flags(j, path);
-	conf_load_colorscheme(j, path);
-	conf_load_keybinds(j, path);
+	conf_load_flags(json, path);
+	conf_load_colorscheme(json, path);
+	conf_load_keybinds(json, path);
 
-	json_destroy(j);
+	JSON_DESTROY(json);
 }

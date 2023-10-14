@@ -40,6 +40,7 @@ void clipboard_set(const char *str, size_t len) {
 		return;
 	}
 
+/* TODO: Make this not a label */
 no_xclip:
 	if (state.xclip)
 		state.xclip = false;

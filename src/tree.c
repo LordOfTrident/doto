@@ -188,11 +188,11 @@ void node_remove(node_t *node) {
 	node_destroy(node);
 }
 
-static node_t *json_to_node(json_t *j, tree_t *tree, group_t *group);
+static node_t *json_list_to_node(json_list_t *list, tree_t *tree, group_t *group);
 
-static group_t *json_to_group(json_t *j, tree_t *tree) {
-	json_t *title    = json_obj_at(j, "title");
-	json_t *children = json_obj_at(j, "children");
+static group_t *json_obj_to_group(json_obj_t *obj, tree_t *tree) {
+	json_t *title    = json_obj_at(obj, "title");
+	json_t *children = json_obj_at(obj, "children");
 
 	if (title == NULL || children == NULL)
 		DIE("%s: Data corrupted (Missing group fields)", tree->path);
@@ -200,16 +200,16 @@ static group_t *json_to_group(json_t *j, tree_t *tree) {
 	if (title->type != JSON_STR || children->type != JSON_LIST)
 		DIE("%s: Data corrupted (Incorrect group field type)", tree->path);
 
-	group_t *group  = group_new(title->as.str.buf, flags[F_OPEN_GROUPS_ON_START]);
-	group->children = json_to_node(children, tree, group);
+	group_t *group  = group_new(JSON_STR(title)->buf, flags[F_OPEN_GROUPS_ON_START]);
+	group->children = json_list_to_node(JSON_LIST(children), tree, group);
 
 	return group;
 }
 
-static task_t *json_to_task(json_t *j, tree_t *tree) {
-	json_t *title = json_obj_at(j, "title");
-	json_t *desc  = json_obj_at(j, "desc");
-	json_t *done  = json_obj_at(j, "done");
+static task_t *json_obj_to_task(json_obj_t *obj, tree_t *tree) {
+	json_t *title = json_obj_at(obj, "title");
+	json_t *desc  = json_obj_at(obj, "desc");
+	json_t *done  = json_obj_at(obj, "done");
 
 	if (title == NULL || desc == NULL || done == NULL)
 		DIE("%s: Data corrupted (Missing task fields)", tree->path);
@@ -218,45 +218,46 @@ static task_t *json_to_task(json_t *j, tree_t *tree) {
 	    (desc->type != JSON_STR && desc->type != JSON_NULL))
 		DIE("%s: Data corrupted (Incorrect task field type)", tree->path);
 
-	return task_new(title->as.str.buf, desc->as.str.buf, done->as.bool_);
+	const char *desc_str = desc == json_null()? NULL : JSON_STR(desc)->buf;
+	return task_new(JSON_STR(title)->buf, desc_str, JSON_BOOL(done)->val);
 }
 
-static node_t *json_to_node(json_t *j, tree_t *tree, group_t *group) {
-	if (j->type != JSON_LIST)
-		DIE("%s: Data corrupted (Expected a list)", tree->path);
-
-	node_t *ret = NULL, *last = NULL;
+static node_t *json_list_to_node(json_list_t *list, tree_t *tree, group_t *group) {
+	node_t *ret  = NULL, *last = NULL;
 
 	size_t count = 0;
 	float  prog  = 0;
-	for (size_t i = 0; i < j->as.list.size; ++ i) {
-		json_t *data = json_list_at(j, i);
-		if (data->type != JSON_OBJ)
+	for (size_t i = 0; i < list->size; ++ i) {
+		json_obj_t *data;
+		JSON_EXPECT_OBJ(data, json_list_at(list, i), {
 			DIE("%s: Data corrupted (Expected an object)", tree->path);
+		});
 
-		json_t *type = json_obj_at(data, "type");
+		json_str_t *type;
+		JSON_EXPECT_STR(type, json_obj_at(data, "type"), {
+			DIE("%s: Data corrupted (Type not a string)", tree->path);
+		});
+
 		if (type == NULL)
 			DIE("%s: Data corrupted (Type not found)", tree->path);
-		else if (type->type != JSON_STR)
-			DIE("%s: Data corrupted (Type not a string)", tree->path);
 
 		node_t *node;
-		if (strcmp(type->as.str.buf, node_type_to_str(NODE_GROUP)) == 0) {
-			group_t *group = json_to_group(data, tree);
+		if (strcmp(type->buf, node_type_to_str(NODE_GROUP)) == 0) {
+			group_t *group = json_obj_to_group(data, tree);
 			if (group->prog != -1) {
 				prog += group->prog;
 				++ count;
 			}
 
 			node = (node_t*)group;
-		} else if (strcmp(type->as.str.buf, node_type_to_str(NODE_TASK)) == 0) {
-			task_t *task = json_to_task(data, tree);
+		} else if (strcmp(type->buf, node_type_to_str(NODE_TASK)) == 0) {
+			task_t *task = json_obj_to_task(data, tree);
 			prog += task->done;
 			++ count;
 
 			node = (node_t*)task;
 		} else
-			DIE("%s: Data corrupted (Unknown type \"%s\")", tree->path, type->as.str.buf);
+			DIE("%s: Data corrupted (Unknown type \"%s\")", tree->path, type->buf);
 
 		node->tree  = tree;
 		node->group = group;
@@ -287,9 +288,13 @@ void tree_load(tree_t *tree, const char *path) {
 	ZERO_STRUCT(tree);
 	tree->path = path;
 
-	size_t  row, col;
-	json_t *j = json_from_file(tree->path, &row, &col);
-	if (j == NULL) {
+	size_t row, col;
+	json_list_t *json;
+	JSON_EXPECT_LIST(json, json_from_file(tree->path, &row, &col), {
+		DIE("%s: Expected data to be a list", path);
+	});
+
+	if (json == NULL) {
 		if (noch_get_err() == NOCH_ERR_FOPEN)
 			return;
 		else if (noch_get_err() == NOCH_ERR_PARSER)
@@ -298,9 +303,9 @@ void tree_load(tree_t *tree, const char *path) {
 			DIE("%s: %s", path, noch_get_err_msg());
 	}
 
-	tree->root = json_to_node(j, tree, NULL);
+	tree->root = json_list_to_node(json, tree, NULL);
 
-	json_destroy(j);
+	JSON_DESTROY(json);
 }
 
 void tree_clean(tree_t *tree) {
@@ -309,47 +314,48 @@ void tree_clean(tree_t *tree) {
 }
 
 static json_t *node_to_json(node_t *node) {
-	json_t *j = json_new_list();
+	json_list_t *list = json_new_list();
 	for (; node != NULL; node = node->next) {
-		json_t *data = json_new_obj();
-		json_obj_add(data, "type", json_new_str(node_type_to_str(node->type)));
+		json_obj_t *data = json_new_obj();
+		JSON_OBJ_ADD(data, "type", json_new_str(node_type_to_str(node->type)));
 
 		switch (node->type) {
 		case NODE_TASK: {
 			task_t *task = (task_t*)node;
+			json_t *desc = task->desc == NULL? json_null() : (json_t*)json_new_str(task->desc);
 
-			json_obj_add(data, "title", json_new_str(task->title));
-			json_obj_add(data, "desc",  task->desc == NULL? json_null() : json_new_str(task->desc));
-			json_obj_add(data, "done",  json_new_bool(task->done));
+			JSON_OBJ_ADD(data, "title", json_new_str(task->title));
+			JSON_OBJ_ADD(data, "desc",  desc);
+			JSON_OBJ_ADD(data, "done",  json_new_bool(task->done));
 		} break;
 
 		case NODE_GROUP: {
 			group_t *group = (group_t*)node;
 
-			json_obj_add(data, "title",    json_new_str(group->title));
-			json_obj_add(data, "children", node_to_json(group->children));
+			JSON_OBJ_ADD(data, "title",    json_new_str(group->title));
+			JSON_OBJ_ADD(data, "children", node_to_json(group->children));
 		} break;
 
 		default: UNREACHABLE();
 		}
 
-		json_list_add(j, data);
+		JSON_LIST_ADD(list, data);
 	}
 
-	return j;
+	return (json_t*)list;
 }
 
 void tree_save(tree_t *tree) {
 	assert(tree->path != NULL);
 
-	json_t *j = node_to_json(tree->root);
+	json_t *json = node_to_json(tree->root);
 
 	FILE *file = fopen(tree->path, "w");
 	if (file == NULL)
 		DIE("Failed to write TODO file \"%s\"", tree->path);
 
-	json_fprint(j, file);
-	json_destroy(j);
+	JSON_FPRINT(json, file);
+	JSON_DESTROY(json);
 
 	fclose(file);
 }

@@ -8,7 +8,7 @@ OBJ  = $(addsuffix .o,$(subst src/,$(BIN)/,$(basename $(SRC))))
 
 CSTD   = c99
 CFLAGS = -O2 -std=$(CSTD) -D_POSIX_C_SOURCE -D_XOPEN_SOURCE -Wall -Wextra -Werror \
-         -pedantic -Wno-deprecated-declarations -g -I./
+         -pedantic -Wno-deprecated-declarations -g -I./noch
 
 build: $(OUT)
 

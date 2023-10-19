@@ -69,6 +69,11 @@ const char *clipboard_get(void) {
 				state.xclip_buf = (char*)xrealloc(state.xclip_buf, cap);
 			}
 
+			if (ch == '\t')
+				ch = ' ';
+			else if (ch < ' ')
+				continue;
+
 			state.xclip_buf[size ++] = ch;
 		}
 		state.xclip_buf[size] = '\0';

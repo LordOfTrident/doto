@@ -28,8 +28,8 @@ uninstall: $(INSTALL)
 	rm $(INSTALL)
 
 clean: $(BIN)
-	rm $(OUT)
 	rm -r $(BIN)/*
+	rm $(OUT)
 
 all:
 	@echo build, install, uninstall, clean

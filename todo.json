@@ -26,6 +26,12 @@
 				"title": "Copy/paste/cut task/group lines",
 				"desc": null,
 				"done": false
+			},
+			{
+				"type": "task",
+				"title": "New task type - scripted task which will be able to extract info from outside the app to automate it",
+				"desc": null,
+				"done": false
 			}
 		]
 	},

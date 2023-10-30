@@ -1,9 +1,10 @@
-# TODO (58% done)
-- (`50%`) **Todo tree**
+# TODO (56% done)
+- (`40%`) **Todo tree**
 	- [X] Tree structure todo list with groups and tasks
 	- [X] Inserting, editing, removing
 	- [ ] Selecting multiple task/group lines
 	- [ ] Copy/paste/cut task/group lines
+	- [ ] New task type - scripted task which will be able to extract info from outside the app to automate it
 - [X] Generating markdown
 - [X] Case sensitive/insensitive tree search
 - [X] **Navigation**
@@ -19,5 +20,5 @@
 	- [ ] Stats showing how many tasks are past deadline, before deadline and during deadline
 	- (`0%`) **Optional notification daemon**
 		- [ ] Notifying about tasks to be done today and tasks that are past the deadline using an external app
-		- [ ] Configurable notification format
+		- [ ] Configurable notification
 		- [ ] Configurable notification frequency
